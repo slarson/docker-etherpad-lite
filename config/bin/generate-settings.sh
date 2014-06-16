@@ -1,6 +1,6 @@
 #!/bin/bash
 
-EP_TITLE=${EP_TITLE:-Etherpad}
+EP_TITLE=${EP_TITLE:-Degrowth Etherpad}
 EP_SESSION_KEY=${EP_SESSION_KEY:-`node -p "require('crypto').randomBytes(32).toString('hex')"`}
 
 
@@ -14,9 +14,11 @@ cat <<END_OF_TEMPLATE
   // Name your instance!
   "title": "${EP_TITLE}",
 
+  "ep_markdown_default": true,
+
   // favicon default name
   // alternatively, set up a fully specified Url to your own favicon
-  "favicon": "favicon.ico",
+  "favicon": "/src/etherpad/favicon.png",
 
   //IP and port which etherpad should bind at
   "ip": "0.0.0.0",
@@ -94,14 +96,14 @@ cat <<END_OF_TEMPLATE
 
   /* Users for basic authentication. is_admin = true gives access to /admin.
      If you do not uncomment this, /admin will not be available! */
-  /*
+  
   "users": {
-    "admin": {
-      "password": "adminetherpad",
+    "root": {
+      "password": "CHANGEME",
       "is_admin": true
     }
   },
-  */
+  
 
   // restrict socket.io transport methods
   "socketTransportProtocols" : ["xhr-polling", "jsonp-polling", "htmlfile"],

@@ -1,0 +1,6 @@
+etherpad:
+  build: .
+  ports:
+   - "9001:9001"
+  volumes:
+   - data/:/data
