@@ -1,174 +1,160 @@
 #!/bin/bash
 
-EP_TITLE=${EP_TITLE:-Degrowth Etherpad}
-EP_SESSION_KEY=${EP_SESSION_KEY:-`node -p "require('crypto').randomBytes(32).toString('hex')"`}
-
-
 cat <<END_OF_TEMPLATE
 /*
-  This file must be valid JSON. But comments are allowed
+This file must be valid JSON. But comments are allowed
 
-  Please edit settings.json, not settings.json.template
+Please edit settings.json, not settings.json.template
 */
 {
-  // Name your instance!
-  "title": "${EP_TITLE}",
+    // Name your instance!
+    "title": "${TEXT_TITLE}",
 
-  "ep_markdown_default": true,
+    // favicon default name
+    // alternatively, set up a fully specified Url to your own favicon
+    "favicon": "${PATH_FAVICON}",
 
-  // favicon default name
-  // alternatively, set up a fully specified Url to your own favicon
-  "favicon": "/src/etherpad/favicon.png",
+    //IP and port which etherpad should bind at
+    "ip": "0.0.0.0",
+    "port" : ${PORT},
 
-  //IP and port which etherpad should bind at
-  "ip": "0.0.0.0",
-  "port" : 9001,
+    // Session Key, used for reconnecting user sessions
+    // Set this to a secure string at least 10 characters long.  Do not share this value.
+    "sessionKey" : "${KEY_SESSION}",
 
-  // Session Key, used for reconnecting user sessions
-  // Set this to a secure string at least 10 characters long.  Do not share this value.
-  "sessionKey" : "${EP_SESSION_KEY}",
+    "dbType" : "sqlite",
 
-  /*
-  // Node native SSL support
-  // this is disabled by default
-  //
-  // make sure to have the minimum and correct file access permissions set
-  // so that the Etherpad server can access them
+    //the database specific settings
 
-  "ssl" : {
-            "key"  : "/path-to-your/epl-server.key",
-            "cert" : "/path-to-your/epl-server.crt"
-          },
+    "dbSettings" : {
+        "filename" : "${PATH_DB}"
+    },
 
-  */
+    /* An Example of MySQL Configuration
+    "dbType" : "mysql",
+    "dbSettings" : {
+        "user"    : "root",
+        "host"    : "localhost",
+        "password": "",
+        "database": "store"
+    },
+    */
 
-  //The Type of the database. You can choose between dirty, postgres, sqlite and mysql
-  //You shouldn't use "dirty" for for anything else than testing or development
-  "dbType" : "sqlite",
-  //the database specific settings
-  "dbSettings" : {
-                   "filename" : "/data/etherpad.db"
-                 },
+    //the default text of a pad
+    "defaultPadText" : "${TEXT_DEFAULT}",
 
-  /* An Example of MySQL Configuration
-   "dbType" : "mysql",
-   "dbSettings" : {
-                    "user"    : "root",
-                    "host"    : "localhost",
-                    "password": "",
-                    "database": "store"
-                  },
-  */
+    /* Users must have a session to access pads. This effectively allows only group pads to be a
+    ccessed. */
+    "requireSession" : false,
 
-  //the default text of a pad
-  "defaultPadText" : "",
+    /* Users may edit pads but not create new ones. Pad creation is only via the API. This appli
+    es both to group pads and regular pads. */
+    "editOnly" : false,
 
-  /* Users must have a session to access pads. This effectively allows only group pads to be accessed. */
-  "requireSession" : false,
+    /* if true, all css & js will be minified before sending to the client. This will improve th
+    e loading performance massivly,
+    but makes it impossible to debug the javascript/css */
+    "minify" : true,
 
-  /* Users may edit pads but not create new ones. Pad creation is only via the API. This applies both to group pads and regular pads. */
-  "editOnly" : false,
+    /* How long may clients use served javascript code (in seconds)? Without versioning this
+    may cause problems during deployment. Set to 0 to disable caching */
+    "maxAge" : 21600, // 60 * 60 * 6 = 6 hours
 
-  /* if true, all css & js will be minified before sending to the client. This will improve the loading performance massivly,
-     but makes it impossible to debug the javascript/css */
-  "minify" : true,
+    /* This is the path to the Abiword executable. Setting it to null, disables abiword.
+    Abiword is needed to advanced import/export features of pads*/
+    "abiword" : null,
 
-  /* How long may clients use served javascript code (in seconds)? Without versioning this
-     may cause problems during deployment. Set to 0 to disable caching */
-  "maxAge" : 21600, // 60 * 60 * 6 = 6 hours
+    /* This setting is used if you require authentication of all users.
+    Note: /admin always requires authentication. */
+    "requireAuthentication": false,
 
-  /* This is the path to the Abiword executable. Setting it to null, disables abiword.
-     Abiword is needed to advanced import/export features of pads*/
-  "abiword" : null,
+    /* Require authorization by a module, or a user with is_admin set, see below. */
+    "requireAuthorization": false,
 
-  /* This setting is used if you require authentication of all users.
-     Note: /admin always requires authentication. */
-  "requireAuthentication": false,
+    /*when you use NginX or another proxy/ load-balancer set this to true*/
+    "trustProxy": true,
 
-  /* Require authorization by a module, or a user with is_admin set, see below. */
-  "requireAuthorization": false,
+    /* Privacy: disable IP logging */
+    "disableIPlogging": false,
 
-  /*when you use NginX or another proxy/ load-balancer set this to true*/
-  "trustProxy": false,
+    /* Users for basic authentication. is_admin = true gives access to /admin.
+    If you do not uncomment this, /admin will not be available! */
 
-  /* Privacy: disable IP logging */
-  "disableIPlogging": false,
+    "users": {
+        "root": {
+            "password": "${KEY_ROOT}",
+            "is_admin": true
+        }
+    },
 
-  /* Users for basic authentication. is_admin = true gives access to /admin.
-     If you do not uncomment this, /admin will not be available! */
-  
-  "users": {
-    "root": {
-      "password": "CHANGEME",
-      "is_admin": true
-    }
-  },
-  
+    // restrict socket.io transport methods
+    "socketTransportProtocols" : ["xhr-polling", "jsonp-polling", "htmlfile"],
 
-  // restrict socket.io transport methods
-  "socketTransportProtocols" : ["xhr-polling", "jsonp-polling", "htmlfile"],
+    /* The toolbar buttons configuration.
+    "toolbar": {
+        "left": [
+        ["bold", "italic", "underline", "strikethrough"],
+        ["orderedlist", "unorderedlist", "indent", "outdent"],
+        ["undo", "redo"],
+        ["clearauthorship"]
+        ],
+        "right": [
+        ["importexport", "timeslider", "savedrevision"],
+        ["settings", "embed"],
+        ["showusers"]
+        ],
+        "timeslider": [
+        ["timeslider_export", "timeslider_returnToPad"]
+        ]
+    },
+    */
 
-  /* The toolbar buttons configuration.
-  "toolbar": {
-    "left": [
-      ["bold", "italic", "underline", "strikethrough"],
-      ["orderedlist", "unorderedlist", "indent", "outdent"],
-      ["undo", "redo"],
-      ["clearauthorship"]
-    ],
-    "right": [
-      ["importexport", "timeslider", "savedrevision"],
-      ["settings", "embed"],
-      ["showusers"]
-    ],
-    "timeslider": [
-      ["timeslider_export", "timeslider_returnToPad"]
-    ]
-  },
-  */
+    /* The log level we are using, can be: DEBUG, INFO, WARN, ERROR */
+    /* The log level we are using, can be: DEBUG, INFO, WARN, ERROR */
+    "loglevel": "INFO",
 
-  /* The log level we are using, can be: DEBUG, INFO, WARN, ERROR */
-  "loglevel": "INFO",
-
-  //Logging configuration. See log4js documentation for further information
-  // https://github.com/nomiddlename/log4js-node
-  // You can add as many appenders as you want here:
-  "logconfig" :
+    //Logging configuration. See log4js documentation for further information
+    // https://github.com/nomiddlename/log4js-node
+    // You can add as many appenders as you want here:
+    "logconfig" :
     { "appenders": [
         { "type": "console"
         //, "category": "access"// only logs pad access
         }
-      , { "type": "file"
-      , "filename": "/data/etherpad.log"
-      , "maxLogSize": 1024
-      , "backups": 3 // how many log files there're gonna be at max
-      //, "category": "test" // only log a specific category
-        }
+    , { "type": "file"
+    , "filename": "${PATH_LOGS}"
+    , "maxLogSize": 1024
+    , "backups": 3 // how many log files there're gonna be at max
+    //, "category": "test" // only log a specific category
+    }
     /*
-      , { "type": "logLevelFilter"
+        , { "type": "logLevelFilter"
         , "level": "warn" // filters out all log messages that have a lower level than "error"
         , "appender":
-          {  Use whatever appender you want here  }
-        }*/
+        {  Use whatever appender you want here  }
+    }*/
     /*
-      , { "type": "logLevelFilter"
-        , "level": "error" // filters out all log messages that have a lower level than "error"
+    , { "type": "logLevelFilter"
+        , "level": "error" // filters out all log messages that have a lower level than "error
+        "
         , "appender":
-          { "type": "smtp"
-          , "subject": "An error occured in your EPL instance!"
-          , "recipients": "bar@blurdybloop.com, baz@blurdybloop.com"
-          , "sendInterval": 60*5 // in secs -- will buffer log messages; set to 0 to send a mail for every message
-          , "transport": "SMTP", "SMTP": { // see https://github.com/andris9/Nodemailer#possible-transport-methods
-              "host": "smtp.example.com", "port": 465,
-              "secureConnection": true,
-              "auth": {
-                  "user": "foo@example.com",
-                  "pass": "bar_foo"
-              }
-            }
-          }
-        }*/
-      ]
+        { "type": "smtp"
+        , "subject": "An error occured in your EPL instance!"
+        , "recipients": "bar@blurdybloop.com, baz@blurdybloop.com"
+        , "sendInterval": 60*5 // in secs -- will buffer log messages; set to 0 to send a ma
+        il for every message
+        , "transport": "SMTP", "SMTP": { // see https://github.com/andris9/Nodemailer#possib
+        le-transport-methods
+        "host": "smtp.example.com", "port": 465,
+        "secureConnection": true,
+        "auth": {
+        "user": "foo@example.com",
+        "pass": "bar_foo"
+        }
+        }
+        }
+    }*/
+    ]
     }
 }
 END_OF_TEMPLATE
