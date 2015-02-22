@@ -26,18 +26,18 @@ if [ ! -f $SETTINGS_DETAILS ]
     APIKEY=`node apikey.js`
 
     printf "export PORT=$PORT\n\
-    export KEY_SESSION=$KEY_SESSION\n\
-    export KEY_ROOT=$KEY_ROOT\n\
-    \n\
-    export TEXT_TITLE=''$TEXT_TITLE'\n\
-    export TEXT_DEFAULT='$TEXT_DEFAULT'\n\
-    \n\
-    export PATH_DB=$PATH_DB\n\
-    export PATH_LOGS=$PATH_LOGS\n\
-    export PATH_FAVICON=$PATH_FAVICON\n\
-    \n\
-    export APIKEY=$APIKEY
-    " > $SETTINGS_DETAILS
+export KEY_SESSION=$KEY_SESSION\n\
+export KEY_ROOT=$KEY_ROOT\n\
+\n\
+export TEXT_TITLE='$TEXT_TITLE'\n\
+export TEXT_DEFAULT='$TEXT_DEFAULT'\n\
+\n\
+export PATH_DB=$PATH_DB\n\
+export PATH_LOGS=$PATH_LOGS\n\
+export PATH_FAVICON=$PATH_FAVICON\n\
+\n\
+export APIKEY=$APIKEY
+" > $SETTINGS_DETAILS
     source $SETTINGS_DETAILS
 
 else
