@@ -17,8 +17,11 @@ RUN npm install \
     ep_timesliderdiff \
     ep_page_view \
     ep_disable_reset_authorship_colours \
-    ep_disable_change_author_name \
     ep_print \
+    ep_font_size \
+    ep_font_color \
+    ep_font_family \
+    ep_sketchspace \
     ep_set_title_on_pad \
     ep_mypads
 EXPOSE 10001
