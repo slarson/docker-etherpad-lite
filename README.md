@@ -7,9 +7,8 @@ README.md
 ## Usage
 
 ```
-docker build -t ecobytes:etherpad .
-docker run --name="ecobytes-etherpad-data" maxexcloo/data
-docker run -d -p 9001:9001 --volumes-from="ecobytes-etherpad-data" ecobytes:etherpad
+docker build .
+docker run -d -p 10001:80 [IMAGE]
 ```
 
 or for local development
