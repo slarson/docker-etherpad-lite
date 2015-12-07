@@ -8,7 +8,7 @@ README.md
 
 ```
 docker build .
-docker run -d -p 10001:80 [IMAGE]
+docker run -d -p 80:10001 [IMAGE]
 ```
 
 or for local development
