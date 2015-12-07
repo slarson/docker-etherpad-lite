@@ -17,8 +17,6 @@ RUN npm install \
     ep_timesliderdiff \
     ep_page_view \
     ep_print \
-    ep_adminpads \
-    ep_list_pads \
     ep_set_title_on_pad \
     ep_mypads
 EXPOSE 10001
