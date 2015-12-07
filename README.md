@@ -20,3 +20,4 @@ fig up
 ## To Do
 
 * Daemonize with Supervisor like https://github.com/Leibnitius/etherpad-docker/ and https://github.com/arcus-io/docker-etherpad/
+* Make SSL ready https://github.com/ether/etherpad-lite/wiki/Providing-encrypted-web-access-to-Etherpad-Lite-using-SSL-certificates-(HTTPS:--)
