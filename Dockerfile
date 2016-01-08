@@ -21,7 +21,6 @@ RUN npm install \
     ep_font_size \
     ep_font_color \
     ep_font_family \
-    ep_sketchspace \
     ep_set_title_on_pad \
     ep_mypads
 EXPOSE 10001
