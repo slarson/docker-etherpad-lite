@@ -1,5 +1,22 @@
 FROM node:0.11
 MAINTAINER Johannes Bornhold <johannes@bornhold.name> + Jon Richter <post@jonrichter.de>
+
+#INSTALL MYSQL
+ENV MYSQL_USER=root \
+    MYSQL_DATA_DIR=/var/lib/mysql \
+    MYSQL_RUN_DIR=/run/mysqld \
+    MYSQL_LOG_DIR=/var/log/mysql
+
+RUN apt-get update \
+ && DEBIAN_FRONTEND=noninteractive apt-get install -y mysql-server \
+ && rm -rf ${MYSQL_DATA_DIR} \
+ && rm -rf /var/lib/apt/lists/*
+
+RUN mkdir -p ${MYSQL_DATA_DIR} && mkdir -p ${MYSQL_RUN_DIR} && \
+  mkdir -p ${MYSQL_LOG_DIR}
+
+#END INSTALL MYSQL
+
 RUN mkdir /src
 WORKDIR /src
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get -y install \
